@@ -1,1 +1,3 @@
-json.array! @posts, partial: "posts/post", as: :post
+json.set! :posts do
+  json.array! @posts, :id, :content, :created_at
+end
