@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
+  protect_from_forgery
 
   # GET /posts or /posts.json
   def index
@@ -8,30 +9,41 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
+    post_id = params[:post_id]
+    Post.find(post_id)
   end
 
   # GET /posts/new
-  def new
-    @post = Post.new
-  end
+  # def new
+  #   content = params[:content]
+  #   @post = Post.new(content)
+  #   @post.save
+  # end
 
   # GET /posts/1/edit
   def edit
+    content = Post.edit(content)
   end
 
   # POST /posts or /posts.json
   def create
-    @post = Post.new(post_params)
-
-    respond_to do |format|
-      if @post.save
-        format.html { redirect_to @post, notice: "Post was successfully created." }
-        format.json { render :show, status: :created, location: @post }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
-      end
+    post = Post.new(post_params)
+    if post.save
+      render json: post, status: :created
+    else
+      render status: 400
     end
+    # @post = Post.new(post_params)
+
+    # respond_to do |format|
+    #   if @post.save
+    #     format.html { redirect_to @post, notice: "Post was successfully created." }
+    #     format.json { render :show, status: :created, location: @post }
+    #   else
+    #     format.html { render :new, status: :unprocessable_entity }
+    #     format.json { render json: @post.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /posts/1 or /posts/1.json
@@ -65,6 +77,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.expect(post: [ :content ])
+      params.require(:post).permit(:content)
     end
 end
