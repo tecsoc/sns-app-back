@@ -1,11 +1,20 @@
 require "rails_helper"
 
-RSpec.describe 'Post', type: :request do           #
-  it 'index' do 
-    get posts_url
-    expect(response).to have_http_status(:success)
-    json = JSON.parse(response.body)
-    expect(json["posts"]).to be_an(Array)
+RSpec.describe 'Post', type: :request do
+  describe 'index' do
+    before do
+      @post1 = create(:post, content: "最初の投稿")
+      @post2 = create(:post, content: "二つ目の投稿")
+    end
+    it '正常系' do 
+      get posts_url
+      expect(response).to have_http_status(:success)
+      json = JSON.parse(response.body)["posts"]
+      expect(json).to be_an(Array)
+      expect(json.size).to eq 2
+      expect(json[0]["content"]).to eq @post1.content
+      expect(json[1]["content"]).to eq @post2.content
+    end
   end
 end
 # class PostsControllerTest < ActionDispatch::IntegrationTest
