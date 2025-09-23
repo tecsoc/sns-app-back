@@ -16,6 +16,30 @@ RSpec.describe 'Post', type: :request do
       expect(json[1]["content"]).to eq @post2.content
     end
   end
+
+  describe "show" do
+    context "正常系（存在する投稿IDの場合）" do
+      it "指定した投稿を取得できること" do
+        post_record = create(:post, content: "特定の投稿")
+
+        get post_path(post_record["id"])
+
+        expect(response).to have_http_status(:ok)
+
+        json = JSON.parse(response.body)
+        expect(json["id"]).to eq post_record.id
+        expect(json["content"]).to eq "特定の投稿"
+      end
+    end
+
+    context "異常系（存在しない投稿IDの場合）" do
+      it "404が返ること" do
+        get post_path(999999)  # 存在しないID
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end
 # class PostsControllerTest < ActionDispatch::IntegrationTest
 #   setup do
