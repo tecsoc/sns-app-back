@@ -37,6 +37,9 @@ RSpec.describe 'Post', type: :request do
         get post_path(999999)  # 存在しないID
 
         expect(response).to have_http_status(:not_found)
+
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq "Not Found"
       end
     end
   end
