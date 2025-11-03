@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :users, format: 'json'
+  resources :users, param: :screen_name, defaults: { format: :json }
   resources :posts, format: 'json'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
