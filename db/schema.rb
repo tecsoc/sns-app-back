@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_08_105723) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_09_081753) do
   create_table "posts", force: :cascade do |t|
     t.string "content"
     t.datetime "created_at", null: false
@@ -20,7 +20,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_08_105723) do
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "screen_name", null: false
-    t.string "password", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
