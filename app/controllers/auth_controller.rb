@@ -65,13 +65,4 @@ class AuthController < ApplicationController
       expires: 24.hours.from_now
     }
   end
-
-  # current_user を取得するヘルパー
-  def current_user
-    return @current_user if defined?(@current_user)
-
-    token = cookies.encrypted[:token]
-    decoded = JsonWebToken.decode(token) if token
-    @current_user = User.find_by(id: decoded[:user_id]) if decoded
-  end
 end

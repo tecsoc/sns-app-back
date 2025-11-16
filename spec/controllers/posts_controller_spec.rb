@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe 'Post', type: :request do
   describe 'index' do
     before do
+      user = create(:user)
       @post1 = create(:post, content: "最初の投稿")
       @post2 = create(:post, content: "二つ目の投稿")
     end
@@ -40,6 +41,35 @@ RSpec.describe 'Post', type: :request do
 
         json = JSON.parse(response.body)
         expect(json["error"]).to eq "Not Found"
+      end
+    end
+  end
+
+  describe "POST /posts" do
+    let(:user) { create(:user) }
+
+    context "ログインユーザーの場合" do
+      it "新しい投稿が作成される" do
+        # ログインして cookies[:token] をセット
+        post "/login", params: { email: user.email, password: user.password }
+        expect(response).to have_http_status(:ok)
+        cookies[:token] = response.cookies["token"]
+
+        # 投稿作成
+        post "/posts", params: { post: { content: "Hello World!" } }
+
+        expect(response).to have_http_status(:created)
+
+        json = JSON.parse(response.body)
+        expect(json["content"]).to eq("Hello World!")
+        expect(json["user"]["id"]).to eq(user.id)
+      end
+    end
+
+    context "ログインしていない場合" do
+      it "401 Unauthorized を返す" do
+        post "/posts", params: { post: { content: "Hello World!" } }
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

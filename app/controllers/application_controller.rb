@@ -10,4 +10,17 @@ class ApplicationController < ActionController::Base
   def render_404
     render json: { error: 'Not Found' }, status: :not_found
   end
+
+  # current_user を取得するヘルパー
+  def current_user
+    return @current_user if defined?(@current_user)
+
+    token = cookies.encrypted[:token]
+    decoded = JsonWebToken.decode(token) if token
+    @current_user = User.find_by(id: decoded[:user_id]) if decoded
+  end
+
+  def login_required
+    render json: { error: "Not authorized" }, status: :unauthorized unless current_user
+  end
 end

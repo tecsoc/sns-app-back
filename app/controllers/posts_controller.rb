@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :login_required, only: [:create, :update, :destroy]
 
   # GET /posts or /posts.json
   def index
@@ -26,9 +27,9 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    post = Post.new(post_params)
+    post = current_user.posts.build(post_params)
     if post.save
-      render json: post, status: :created
+      render json: post.as_json(include: { user: { only: [:id, :screen_name] } }), status: :created
     else
       render status: 400
     end
