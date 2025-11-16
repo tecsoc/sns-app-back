@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  post '/signup', to: 'auth#signup'
+  post '/login',  to: 'auth#login'
+  delete '/logout', to: 'auth#logout'
+  get '/me', to: 'auth#me'
+  
   resources :users, param: :screen_name, defaults: { format: :json }
   resources :posts, format: 'json'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

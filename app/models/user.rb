@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   has_secure_password
 
+  validates :email, uniqueness: true
+  validates :screen_name, uniqueness: true
   validates :password,
     format: {
       with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\W]{8,}\z/,
@@ -8,5 +10,5 @@ class User < ApplicationRecord
     },
     if: -> { password.present? }  # 編集時に空で通すため
 
-    has_many :posts, dependent: :destroy
+  has_many :posts, dependent: :destroy
 end
